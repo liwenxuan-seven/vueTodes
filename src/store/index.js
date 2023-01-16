@@ -9,13 +9,27 @@ export default new Vuex.Store({
     list:[],
     inputValue:'acd',
     nextId:5,
-    unDoneCount:0
+    unDoneCount:0,
+    nowKey:'all'
   },
   getters: {
     //统计未完成的任务个数
     unDoneLength(state) {
       state.unDoneCount = state.list.filter(list => list.done == false).length
+    },
+    infoList(state) {
+      if(state.nowKey==='all') {
+        return state.list
+      }
+      else if(state.nowKey === 'unDone') {
+        return state.list.filter(list => list.done===false)
+      }
+      else if(state.nowKey === 'done') {
+        return state.list.filter(list => list.done === true)
+      }
+      else return state.list
     }
+
   },
   mutations: {
     initList(state,list) {
@@ -46,8 +60,11 @@ export default new Vuex.Store({
     },
     clearDone(state) {
       state.list= state.list.filter(list => list.done !=true)
+    },
+    changeKey(state,key) {
+      state.nowKey=key
+    },
 
-    }
   },
   actions: {
     getList(content) {

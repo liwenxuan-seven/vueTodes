@@ -3,7 +3,7 @@
     <a-input placeholder="请输入任务" class="my_ipt" :value='inputValue' @change="changeValue"/>
     <a-button type="primary" @click="addItemToList">添加事项</a-button>
 
-    <a-list bordered :dataSource="list" class="dt_list" >
+    <a-list bordered :dataSource="infoList" class="dt_list" >
       <a-list-item slot="renderItem" slot-scope="item">
         <!-- 复选框 -->
         <a-checkbox :checked="item.done" @change="(e) => {cbStatusChanged(e,item.id)}">{{ item.info }}</a-checkbox>
@@ -14,10 +14,10 @@
       <!-- footer区域 -->
       <div class="footer" slot="footer">
         <span >{{unDoneCount}}条剩余</span>
-        <a-button-group>
-          <a-button type="primary">全部</a-button>
-          <a-button>未完成</a-button>
-          <a-button>已完成</a-button>
+        <a-button-group >
+          <a-button :type="nowKey === 'all'? 'primary': 'default'" @click="changeList('all')">全部</a-button>
+          <a-button :type="nowKey === 'unDone'? 'primary': 'default'" @click="changeList('unDone')">未完成</a-button>
+          <a-button :type="nowKey === 'done'? 'primary': 'default'" @click="changeList('done')">已完成</a-button>
         </a-button-group>
         <a @click="clear">清除已完成</a>
       </div>
@@ -26,7 +26,7 @@
 </template>
 <script>
 
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'App',
@@ -35,7 +35,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['list','inputValue','unDoneCount'])
+    ...mapState(['list','inputValue','unDoneCount','nowKey']),
+    ...mapGetters(['infoList'])
   },
   created () {
     this.$store.dispatch('getList')
@@ -60,6 +61,9 @@ export default {
     },
     clear() {
       this.$store.commit('clearDone')
+    },
+    changeList(meg) {
+      this.$store.commit('changeKey',meg)
     }
   }
 }
