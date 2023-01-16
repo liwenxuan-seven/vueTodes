@@ -1,32 +1,74 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+    <a-input placeholder="请输入任务" class="my_ipt" :value='inputValue' @change="changeValue"/>
+    <a-button type="primary" @click="addItemToList">添加事项</a-button>
+
+    <a-list bordered :dataSource="list" class="dt_list" >
+      <a-list-item slot="renderItem" slot-scope="item">
+        <!-- 复选框 -->
+        <a-checkbox :checked="item.done" @change="(e) => {!item.done}">{{ item.info }}</a-checkbox>
+        <!-- 删除链接 -->
+        <a slot="actions" @click="delItemById(item.id)">删除</a>
+      </a-list-item>
+
+      <!-- footer区域 -->
+      <div class="footer" slot="footer">
+        <span>0条剩余</span>
+        <a-button-group>
+          <a-button type="primary">全部</a-button>
+          <a-button>未完成</a-button>
+          <a-button>已完成</a-button>
+        </a-button-group>
+        <a>清除已完成</a>
+      </div>
+    </a-list>
   </div>
 </template>
+<script>
 
-<style>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'App',
+  data () {
+    return {
+    }
+  },
+  computed: {
+    ...mapState(['list','inputValue'])
+  },
+  created () {
+    this.$store.dispatch('getList')
+  },
+  methods: {
+    changeValue(e) {
+      this.$store.commit('setInputValue',e.target.value)
+    },
+    addItemToList() {
+      if(this.inputValue.trim().length <= 0) return this.$message.warning('事项不可为空！')
+      this.$store.commit('addItem')
+    },
+    delItemById(id) {
+      this.$store.commit('delItem',id)
+    }
+  }
+}
+</script>
+<style scoped>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  padding: 10px;
 }
-
-nav {
-  padding: 30px;
+.my_ipt {
+  width: 500px;
+  margin-right: 10px;
 }
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.dt_list {
+  width: 500px;
+  margin-top: 10px;
 }
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
