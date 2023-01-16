@@ -6,7 +6,7 @@
     <a-list bordered :dataSource="list" class="dt_list" >
       <a-list-item slot="renderItem" slot-scope="item">
         <!-- 复选框 -->
-        <a-checkbox :checked="item.done" @change="(e) => {!item.done}">{{ item.info }}</a-checkbox>
+        <a-checkbox :checked="item.done" @change="(e) => {cbStatusChanged(e,item.id)}">{{ item.info }}</a-checkbox>
         <!-- 删除链接 -->
         <a slot="actions" @click="delItemById(item.id)">删除</a>
       </a-list-item>
@@ -50,6 +50,13 @@ export default {
     },
     delItemById(id) {
       this.$store.commit('delItem',id)
+    },
+    cbStatusChanged(e,id){
+      const param = {
+        id:id,
+        done:e.target.checked
+      }
+      this.$store.commit('cbCheckedChanged',param)
     }
   }
 }

@@ -31,7 +31,14 @@ export default new Vuex.Store({
     delItem(state,id) {
    // state.list=state.list.filter(state.list.id!==tag)
     state.list = state.list.filter(list=>list.id !== id )
- }
+ },
+    cbCheckedChanged(state,param) {
+      const index = state.list.findIndex(list => list.id=== param.id)
+      if(index!=-1) {
+        state.list[index].done = param.done
+      }
+      else return
+    }
   },
   actions: {
     getList(content) {
