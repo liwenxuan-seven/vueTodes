@@ -8,9 +8,14 @@ export default new Vuex.Store({
   state: {
     list:[],
     inputValue:'acd',
-    nextId:5
+    nextId:5,
+    unDoneCount:0
   },
   getters: {
+    //统计未完成的任务个数
+    unDoneLength(state) {
+      state.unDoneCount = state.list.filter(list => list.done == false).length
+    }
   },
   mutations: {
     initList(state,list) {
@@ -38,6 +43,10 @@ export default new Vuex.Store({
         state.list[index].done = param.done
       }
       else return
+    },
+    clearDone(state) {
+      state.list= state.list.filter(list => list.done !=true)
+
     }
   },
   actions: {

@@ -13,13 +13,13 @@
 
       <!-- footer区域 -->
       <div class="footer" slot="footer">
-        <span>0条剩余</span>
+        <span >{{unDoneCount}}条剩余</span>
         <a-button-group>
           <a-button type="primary">全部</a-button>
           <a-button>未完成</a-button>
           <a-button>已完成</a-button>
         </a-button-group>
-        <a>清除已完成</a>
+        <a @click="clear">清除已完成</a>
       </div>
     </a-list>
   </div>
@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['list','inputValue'])
+    ...mapState(['list','inputValue','unDoneCount'])
   },
   created () {
     this.$store.dispatch('getList')
@@ -57,6 +57,9 @@ export default {
         done:e.target.checked
       }
       this.$store.commit('cbCheckedChanged',param)
+    },
+    clear() {
+      this.$store.commit('clearDone')
     }
   }
 }
